@@ -1,0 +1,27 @@
+#!/usr/bin/python
+
+from lxml import html
+import requests
+import re
+
+frontpage = requests.get('https://fullduplexradio.us')
+frontdom = html.fromstring(frontpage.content)
+episodelinks = frontdom.xpath('//a/attribute::href')
+
+song_syntax = re.compile(r"""
+^                                         # beginning of string
+    \( (?P<ts> \S+ ) \) \s+               # ( timestamp ) whitespace
+    (?P<artist> [^-\u2014]+ )             # artist(s) (all text before the Em Dash aka \u2014)
+    (?: \s+ \u2014 \s+ (?P<title> .* ) )? # optional title (the text after the Em Dash)
+                                          # for the DJs speaks bits, it is empty
+$                                         # end of string
+""", re.VERBOSE)
+
+for episode in episodelinks:
+    page = requests.get('https://fullduplexradio.us/' + episode)
+    dom = html.fromstring(page.content)
+    songs = dom.xpath('//p[@class="p1"]')  # not all p1's are songs though, but most
+    for song in songs:
+        m = song_syntax.match(song.text_content())
+        if m:
+            print(m.groupdict()['artist'])
