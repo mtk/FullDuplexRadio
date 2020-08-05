@@ -11,7 +11,7 @@ episodelinks = frontdom.xpath('//a/attribute::href')
 song_syntax = re.compile(r"""
 ^                                         # beginning of string
     \( (?P<ts> \S+ ) \) \s+               # ( timestamp ) whitespace
-    (?P<artist> [^-\u2014]+ )             # artist(s) (all text before the Em Dash aka \u2014)
+    (?P<artist> [^\u2014]+ )             # artist(s) (all text before the Em Dash aka \u2014)
     (?: \s+ \u2014 \s+ (?P<title> .* ) )? # optional title (the text after the Em Dash)
                                           # for the DJs speaks bits, it is empty
 $                                         # end of string
