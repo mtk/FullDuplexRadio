@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# maybe https://fullduplexradio.us/feed.xml
+
 from lxml import html
 import requests
 import re
@@ -20,8 +22,11 @@ $                                         # end of string
 for episode in episodelinks:
     page = requests.get('https://fullduplexradio.us/' + episode)
     dom = html.fromstring(page.content)
-    songs = dom.xpath('//p[@class="p1"]')  # not all p1's are songs though, but most
+
+    songs = dom.xpath('//p[@class="p5"]')  # not all p1's are songs though, but most
     for song in songs:
         m = song_syntax.match(song.text_content())
         if m:
-            print(m.groupdict()['artist'])
+            d = m.groupdict()
+            print(d['artist'], ' - ', d['title'])
+
