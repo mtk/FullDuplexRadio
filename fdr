@@ -13,7 +13,7 @@ episodelinks = frontdom.xpath('//a/attribute::href')
 song_syntax = re.compile(r"""
 ^                                         # beginning of string
     \( (?P<ts> \S+ ) \) \s+               # ( timestamp ) whitespace
-    (?P<artist> [^\u2014]+ )             # artist(s) (all text before the Em Dash aka \u2014)
+    (?P<artist> [^\u2014]+ )              # artist(s) (all text before the Em Dash aka \u2014)
     (?: \s+ \u2014 \s+ (?P<title> .* ) )? # optional title (the text after the Em Dash)
                                           # for the DJs speaks bits, it is empty
 $                                         # end of string
@@ -23,7 +23,7 @@ for episode in episodelinks:
     page = requests.get('https://fullduplexradio.us/' + episode)
     dom = html.fromstring(page.content)
 
-    songs = dom.xpath('//p[@class="p5"]')  # not all p1's are songs though, but most
+    songs = dom.xpath('//p[@class="p5"]')  # not all p5's are songs though, but most
     for song in songs:
         m = song_syntax.match(song.text_content())
         if m:
